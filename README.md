@@ -14,6 +14,17 @@ Battle-tested for building production-grade systems at high complexity — as a 
 
 ---
 
+## What This Is Not
+
+- ❌ Not a CI/CD replacement
+- ❌ Not an automated testing framework
+- ❌ Not an agentic loop that runs unsupervised
+- ❌ Not a shortcut — it's a discipline
+
+This workflow trades speed for control. If you want fully automated pipelines, this isn't it. If you want to know exactly what changed and why — this is exactly it.
+
+---
+
 ## Three Agents, One Flow
 
 ```
@@ -43,7 +54,7 @@ Use this when you have a new feature, bug fix, or refactor that doesn't have a s
 
 The Planner will ask clarifying questions before writing anything — **do not skip this phase**. An ambiguous spec costs more than the time spent clarifying upfront.
 
-Output: a `prd.md` containing scope, files to touch, implementation steps, and a Definition of Done.
+Output: a `prd.md` containing scope, files to touch, implementation steps, breaking changes assessment, and a Definition of Done.
 
 > ⚠️ **You must review and approve `prd.md` before moving to the Executor.**
 
@@ -59,7 +70,10 @@ Use this when `prd.md` exists and has been approved by you.
 
 The Executor runs step by step, one change at a time, confirming each step with you. If anything is ambiguous or impossible → it **stops and reports**, never improvises a workaround silently.
 
+If the Executor gets stuck mid-way, it will report a **Partial Execution Report** — completed steps, what blocked it, and what's not yet started. You decide how to proceed.
+
 > ⚠️ **If the Executor stops — that's the system working correctly.**
+> ⚠️ **Do not trigger QA on a partial execution.**
 
 ---
 
@@ -71,10 +85,11 @@ Use this after the Executor finishes and reports "Ready for QA".
 - "check the output"
 - "run QA"
 
-QA verifies three things:
+QA verifies four things:
 1. Was everything in the spec actually implemented?
-2. Is the Definition of Done met?
-3. Are there any issues — logic, security, side effects, consistency?
+2. Were breaking changes handled correctly?
+3. Is the Definition of Done met?
+4. Are there any issues — logic, security, side effects, consistency?
 
 Output: a report with a clear status — **PASS / FAIL / PASS WITH WARNINGS** — and an explicit verdict on whether it's safe to ship.
 
@@ -102,6 +117,7 @@ This workflow is slower by design, but **safe by control**:
 
 - The Planner doesn't move forward until you understand the requirement
 - The Executor doesn't improvise when something is unclear
+- The Executor stops and reports if it gets stuck — it never silently skips
 - QA doesn't approve when a Critical issue exists
 
 For a solo developer managing architecture, operations, and delivery all at once — **control beats speed**.
@@ -114,6 +130,7 @@ For a solo developer managing architecture, operations, and delivery all at once
 - You approve every transition between agents
 - If an agent says stop → stop, do not push through
 - The spec is a contract — if scope changes, go back to the Planner
+- Never trigger QA on incomplete execution
 
 ---
 
