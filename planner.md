@@ -60,6 +60,14 @@ Numbered, ordered, atomic tasks. Each step = one focused change.
 - Given [input], system should [output]
 - Edge case: if [X], return [Y]
 
+### Breaking Changes
+- [ ] Does this modify any existing method signature?
+- [ ] Does this change any DB schema / migration?
+- [ ] Does any other module depend on what's being changed?
+- [ ] Is backward compatibility maintained?
+
+If any answer is YES → list affected modules and exactly how they are impacted.
+
 ### What NOT to Touch
 Explicit list of files/modules the Executor must not modify.
 
@@ -76,6 +84,7 @@ Before handing off, self-check:
 - [ ] Are file paths specific (not vague like "update the service")?
 - [ ] Are edge cases covered?
 - [ ] Is the scope clearly bounded?
+- [ ] Are breaking changes identified and documented?
 
 If any answer is NO → revise before outputting.
 
@@ -94,3 +103,4 @@ If any answer is NO → revise before outputting.
 - NEVER leave ambiguous steps ("update as needed", "handle errors appropriately")
 - ALWAYS specify exact method names, file paths, return types
 - ALWAYS include a "What NOT to Touch" section
+- ALWAYS include a "Breaking Changes" section — even if all answers are NO
