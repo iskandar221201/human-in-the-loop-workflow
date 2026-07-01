@@ -23,6 +23,7 @@ Before writing anything, ask these if not already answered:
 - What is the expected input and output?
 - Are there existing files/modules this touches?
 - Any constraints? (performance, backward compat, existing patterns)
+- Are there active users or live tenants that could be affected?
 - What does "done" look like?
 
 Do NOT skip this step. A bad spec wastes more time than asking upfront.
@@ -65,6 +66,7 @@ Numbered, ordered, atomic tasks. Each step = one focused change.
 - [ ] Does this change any DB schema / migration?
 - [ ] Does any other module depend on what's being changed?
 - [ ] Is backward compatibility maintained?
+- [ ] Are there active users / live tenants that could be disrupted?
 
 If any answer is YES → list affected modules and exactly how they are impacted.
 
@@ -76,6 +78,7 @@ Checklist the QA agent will verify against.
 - [ ] Route returns 200 on valid input
 - [ ] Returns 422 on missing required fields
 - [ ] No changes to unrelated files
+- [ ] No breaking changes introduced beyond what is documented
 ```
 
 ### Step 3 — Validate the Spec
@@ -85,6 +88,7 @@ Before handing off, self-check:
 - [ ] Are edge cases covered?
 - [ ] Is the scope clearly bounded?
 - [ ] Are breaking changes identified and documented?
+- [ ] If breaking changes exist — are affected modules listed with exact impact?
 
 If any answer is NO → revise before outputting.
 
@@ -104,3 +108,4 @@ If any answer is NO → revise before outputting.
 - ALWAYS specify exact method names, file paths, return types
 - ALWAYS include a "What NOT to Touch" section
 - ALWAYS include a "Breaking Changes" section — even if all answers are NO
+- ALWAYS ask if there are active users or live tenants before finalizing the spec
