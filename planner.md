@@ -58,6 +58,32 @@ Before planning any solution, answer these questions in order. Stop at the first
 
 ---
 
+### Step 1.6 — Reusability Assessment
+Before speccing the implementation approach, evaluate whether what you're about to build should be designed for reuse.
+
+Answer these in order:
+
+1. **Will this function/service method be called from more than one place — now or in the near future?**
+   - If yes → spec it as a standalone method in the appropriate Service layer, not inline logic
+   - If no → inline is acceptable; do not over-abstract
+
+2. **Will this UI component share structure, behavior, or styling with components elsewhere in the codebase?**
+   - If yes → spec it as a shared component in the appropriate `_components/` or `_partials/` folder
+   - If no → build it isolated in the feature view; flag it as a reuse candidate in the Skill Extractor if the pattern seems generalizable
+
+3. **What is the realistic reuse horizon?**
+   - **Short (< 1 month, 1 callsite)** → inline; no abstraction needed
+   - **Medium (1–3 months, 2–3 likely callsites)** → extract into method/component now; cost of abstraction is low
+   - **Long (3+ months, many callsites)** → reusable from day one; flag for Skill Extractor after QA
+
+4. **If built as reusable — is the interface clean enough that another developer could use it without reading the internals?**
+   - If no → simplify the interface before speccing it as reusable
+   - If yes → proceed; document the public interface in the spec
+
+> ⚠️ **Do not abstract for abstraction's sake. Reusability is only worth the cost if reuse is realistic. A component used once is not reusable — it is premature generalization.**
+
+---
+
 ### Step 2 — Read Skill Files Before Planning
 Before writing a single line of the spec, read all relevant skill files.
 
@@ -95,6 +121,12 @@ Document your YAGNI + DRY reasoning before the solution:
 - Existing dependency covers this? → [Yes: [package] / No]
 - Solvable by config change only? → [Yes/No]
 - Minimum scope decision: [what was ruled out and why]
+
+### Reusability Assessment
+- Called from more than one place? → [Yes / No — reason]
+- Shares structure with existing UI components? → [Yes: [component] in [file] / No]
+- Reuse horizon: [Short / Medium / Long — reasoning]
+- Decision: [Reusable unit / Inline / Inline but flag for Skill Extractor]
 
 ### Skill Files Read
 List the skill files that were read before writing this spec.
@@ -162,6 +194,9 @@ Before handing off, self-check:
 - [ ] If breaking changes exist — are affected modules listed with exact impact?
 - [ ] Is this the minimum spec that achieves the goal? Could any step be removed?
 - [ ] Am I reusing existing code where possible — not creating new abstractions?
+- [ ] Did I complete the Reusability Assessment before choosing the implementation approach?
+- [ ] If marked reusable — is the public interface clean enough that another dev can use it without reading internals?
+- [ ] If marked inline — did I avoid over-abstracting something used only once?
 
 If any answer is NO → revise before outputting.
 
@@ -193,3 +228,7 @@ If any answer is NO → revise before outputting.
 - ALWAYS ask if there are active users or live tenants before finalizing the spec
 - ALWAYS prefer the simpler of two approaches that achieve the same result
 - ALWAYS ask: "Is this the minimum change that achieves the goal?" before finalizing
+- ALWAYS complete the Reusability Assessment before choosing inline vs extracted approach
+- NEVER abstract into a reusable unit if realistic callsites are fewer than 2
+- ALWAYS spec reusable components/methods with a clean public interface — no leaking internals
+- ALWAYS flag reusable candidates to Skill Extractor after QA pass
