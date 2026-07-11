@@ -43,6 +43,27 @@ This workflow trades speed for control. If you want fully automated pipelines, t
 
 ---
 
+## Optional Review Agents
+
+After QA passes, you can run one or more **specialist review agents** before shipping. These are optional but recommended for features that touch security, database, performance, or architecture boundaries.
+
+```
+[ QA ] → PASS → (optional) [ REVIEW AGENTS ] → cleared → [ SKILL EXTRACTOR ]
+```
+
+| Agent | File | When to use |
+|---|---|---|
+| 🏛️ Architecture Review | `review_agent/architecture-review.md` | New module, new pattern, cross-module integration |
+| 🗄️ Migration Review | `review_agent/migration-review.md` | Any DB schema change or migration file |
+| ⚡ Performance Review | `review_agent/performance-review.md` | New queries, loops, external calls, bulk ops |
+| 🔒 Security Review | `review_agent/security-review.md` | New endpoints, auth logic, user input handling |
+
+Each review agent reads the actual code — not the spec — and reports issues with severity: 🚨 Violation / ⚠️ Warning / ℹ️ Informational. They do NOT fix anything. They report. You decide.
+
+> ⚠️ **A 🚨 Violation from any review agent means do not ship — go back to the Executor with a fix spec.**
+
+---
+
 ## How to Use
 
 ### 1. Start with the Planner
@@ -96,7 +117,20 @@ Output: a report with a clear status — **PASS / FAIL / PASS WITH WARNINGS** �
 
 ---
 
-### 4. Run the Skill Extractor (optional but recommended)
+### 4. Run Review Agents (optional)
+Use after QA returns PASS — on any feature where the stakes are higher than usual.
+
+**Trigger phrases:**
+- "architecture review"
+- "migration review"
+- "performance review"
+- "security review"
+
+You can run one or all four depending on what was built. Each produces a report with a clear verdict. A 🚨 Violation means stop — fix it first.
+
+---
+
+### 5. Run the Skill Extractor (optional but recommended)
 Use this after QA returns PASS — especially when a new pattern, module, or convention was introduced.
 
 **Trigger phrases:**
@@ -123,6 +157,8 @@ Not every task needs to start from the Planner.
 | Executor finished, need verification | QA |
 | Small bug with a clearly bounded scope | Executor (with an inline mini-spec) |
 | Auditing existing code | QA |
+| New endpoints or auth logic introduced | Security Review |
+| DB migration in the changeset | Migration Review |
 | New pattern just shipped and needs documenting | Skill Extractor |
 | Onboarding a new codebase | Skill Extractor |
 
@@ -138,6 +174,7 @@ This workflow is slower by design, but **safe by control**:
 - The Executor doesn't improvise when something is unclear
 - The Executor stops and reports if it gets stuck — it never silently skips
 - QA doesn't approve when a Critical issue exists
+- Review agents report violations — they never suppress them
 - The Skill Extractor confirms patterns with you before documenting them
 
 For a solo developer managing architecture, operations, and delivery all at once — **control beats speed**.
@@ -151,6 +188,7 @@ For a solo developer managing architecture, operations, and delivery all at once
 - If an agent says stop → stop, do not push through
 - The spec is a contract — if scope changes, go back to the Planner
 - Never trigger QA on incomplete execution
+- Never ship on a 🚨 Violation from any review agent
 - Never let the Skill Extractor write without your confirmation of the patterns
 
 ---
